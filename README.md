@@ -12,6 +12,7 @@ Getting started with LogHawk is easy!
 4. Then go to the other script in this repo called LogHawk.txt, and copy this text. This is where you can decide what you would like for LogHawk to scan; the default is All.
 5. Go back to your terminal and create a new file again with "nano LogHawk.txt", but this one does not have to be executable because it is just telling what LogHawk should scan.
 6. If you would like LogHawk to be run automatically, you can set it as a cron script. This is done by going into the terminal and typing "crontab -e". This takes you to your cron scripts, then add "*/10 * * * * /bin/bash LogHawk.sh". This says you want LogHawk to run every 10 minutes. You can adjust the time to your preference.
+7. To run this tool without cron, type "./LogHawk.sh" into your terminal. Once that's done, type "cat LogHawkAlerts.txt" which will show you all the alerts the tool found. 
 
 # Preferences
 
