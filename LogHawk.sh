@@ -87,7 +87,7 @@ check_traffic() {
 #checking what needs to be monitored from LogHawk.txt
 info=$(tail -n 1 "$MONITOR")
 checks="${info#*here: }"
-echo "$checks"
+
 
 #if input is all 
 
