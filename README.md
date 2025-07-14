@@ -26,4 +26,5 @@ If you would like them to go to a different filepath, adjust the code at line 19
     - To monitor a new filepath for high traffic: adjust line 13
 - If the cron scan is giving you too many false positives, you can add to the safe scripts on line 11, which tells LogHawk that those files are safe.
 - You can adjust the threshold considered for IPs visiting your website by placing your new threshold on line 15; the default is 3.
-- Following the LogHawk.txt, you can adjust what you would like to be monitored. 
+- Following the LogHawk.txt, you can adjust what you would like to be monitored.
+- You may also change the threshold for how many critical and error alerts signify a system failure alert. The default is 5 but can be adjusted on line 9.
