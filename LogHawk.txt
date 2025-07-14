@@ -1,0 +1,8 @@
+Select what you would like to monitor:
+        "All" - all
+        "TFL" - Too Many Failed Logins
+        "UTS" - Unusual Traffic Spikes
+        "CTS" - Critical System Errors
+        "SSA" - Suspicious Script Activity
+Give your selections here: All
+
