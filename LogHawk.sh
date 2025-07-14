@@ -65,7 +65,7 @@ check_scripts() {
 #get script
                         SCRIPT=$(echo "$line" | grep -Eo '[^ ]+\.(sh|py)')
 #skip trusted root scripts
-                        if [[ "$USER" == "root" ]] && echo "$SCRIPT" | grep -qE "$SAFE_SCRIPTS"; then
+                        if [[ "$USER" == "root" ]] && (echo "$SCRIPT" | grep -qE "$SAFE_SCRIPTS"); then
                                 continue
                         fi
                         echo "Suspicous cron job: $line" >> "$ALERTS"
