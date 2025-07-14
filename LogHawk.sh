@@ -1,19 +1,21 @@
 !/bin/bash
 
 #constant file paths
+#put in file path that needs to be scanned for failed passwords
 AUTH_LOG=project_auth_log.txt
-#AUTH_LOG=/var/log/auth.log
-#SYSLOG=/var/log/syslog
+#put in file path that needs to be scanned for system errors
 SYSLOG=project_app_log.txt
-THRESHOLD=10
-#CRON=/etc/crontab
+#put in file path that needs to be scanned for suspicious cron jobs
 CRON=project_system_log.txt
+#this can be updated to preference
 SAFE_SCRIPTS="^networkd-dispatcher$|^VBoxService$|^unattended-upgrade$|^LogHawk\.sh$|.*backup\.py$|.*cleanup\.py$|bash$"
+#put in file path that needs to be scanned for hammering IPs
 TRAFFIC=project_access_log.txt
-#TRAFFIC=/var/log/apache2/access.log
+#threshold IPs can access before alert
 IP_THRESHOLD=3
-TEMP_LOG=$(mktemp)
+#file path that tells what needs to be monitored
 MONITOR=LogHawk.txt
+#where to place alerts, if not changed this path will be created.
 ALERTS=LogHawkAlerts.txt
 
 
