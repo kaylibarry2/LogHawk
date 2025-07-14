@@ -5,6 +5,8 @@
 AUTH_LOG=project_auth_log.txt
 #put in file path that needs to be scanned for system errors
 SYSLOG=project_app_log.txt
+#this is the threshold for critical and error alert totals to be alerted when a system may fail
+THRESHOLD=5
 #put in file path that needs to be scanned for suspicious cron jobs
 CRON=project_system_log.txt
 #this can be updated to preference
@@ -49,7 +51,7 @@ check_system_errors() {
         echo "$ERRORS Errors" >> "$ALERTS"
         echo "$CRITICALS Critical Alerts" >> "$ALERTS"
 #if alerts are more than 5 sending an alert that there are too many
-        if [ "${TOTALS:-0}" -gt 5 ]; then
+        if [ "${TOTALS:-0}" -gt "$THRESHOLD" ]; then
                 echo "High number of system issues : $TOTALS total." >> "$ALERTS"
         fi
 }
