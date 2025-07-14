@@ -1,0 +1,121 @@
+#!/bin/bash
+
+#constant file paths
+AUTH_LOG=project_auth_log.txt
+#AUTH_LOG=/var/log/auth.log
+#SYSLOG=/var/log/syslog
+SYSLOG=project_app_log.txt
+THRESHOLD=10
+#CRON=/etc/crontab
+CRON=project_system_log.txt
+SAFE_SCRIPTS="^networkd-dispatcher$|^VBoxService$|^unattended-upgrade$|^LogHawk.sh$|bash$"
+TRAFFIC=project_access_log.txt
+#TRAFFIC=/var/log/apache2/access.log
+IP_THRESHOLD=1
+TEMP_LOG=$(mktemp)
+MONITOR=LogHawk.txt
+ALERTS=LogHawkAlerts.txt
+
+#define what perimeters need to be watched from file
+
+
+#checking too many failed logins
+check_failed_logins() {
+        echo "Beginning scan..."
+# searches auth.log for authentication failure, does not log attempts to read logs from this script, 
+#gives the last field from output, trims user=student to just student, sorts the output, counts the output,
+# if more than 3, log user, sort so most attempts are presented firs, print output
+        sudo grep "authentication failure|Failed password" "$AUTH_LOG" \
+        | grep -v "$AUTH_LOG" \
+        | awk '{print $(NF)}' \
+        | cut -d= -f2 \
+        | sort \
+        | uniq -c \
+        | awk '$1 >= 3' \
+        | sort -nr \
+        | awk '{print $1 " Failed logon attempts from " $2}'>> "$ALERTS"
+# searches auth.log for 3 incorrect password,
+#gives the user from output, sorts the output, counts the output,
+#sort so most attempts are presented firs, print output
+
+        sudo grep "3 incorrect password" "$AUTH_LOG" \
+        | awk '{print $6}' \
+        | sort \
+        | uniq -c \
+        | sort -nr \
+        | awk '{print "3 Failed Logons for Root by " $2}'>> "$ALERTS"
+
+        echo "scan Complete"
+
+}
+#checking for Too Many Errors 
+check_system_errors() {
+#checks syslog for any errors or criticals from the most recent 500 lines, counts how many lines matched
+        error_count=$(sudo tail -n 500 "$SYSLOG" \
+        | grep -Ei 'ERROR|CRITICAL'\
+        | wc -l)
+#alerts if erros exceed threshold
+        if [ "$error_count" -ge "$THRESHOLD" ]; then
+        echo "System error rates are too high!" >> "$ALERTS"
+        fi
+}
+
+check_traffic() {
+        echo "$TRAFFIC"
+        NOW=$(date +%s)
+        CUTOFF=$(date -d "$WINDOW ago" +%s)
+
+        awk -v cutoff="$CUTOFF" '
+        { match($0, /\[([0-9]+\/[A-Za-z]+\/[0-9]+:[0-9]+:[0-9]+:[0-9]+) [+-][0-9]+\]/, t);
+            if (t[1] != "") {
+                cmd = "date -d \"" t[1] "\" +%s";
+                cmd | getline logtime;
+                close(cmd);
+                if (logtime >= cutoff) print $0;
+            }
+        }' "$LOG_FILE" > "$TEMP_LOG"
+
+
+        awk '{print $1}' "$TEMP_LOG" | sort | uniq -c | sort -nr | while read COUNT IP; do
+            if [ "$COUNT" -ge "$IP_THRESHOLD" ]; then
+                echo " possible hammering." >> "$ALERTS"
+            fi
+        done
+
+        rm "$TEMP_LOG"
+
+
+#awk '{print $1}' /var/log/apache2/access.log | sort | uniq -c | sort -nr | head
+
+}
+
+check_scripts(){
+#check for suspicious entries
+        if sudo grep -E "\.sh|curl|wget|base64|python|perl|bash" "$CRON" \
+        | grep -v '^#' \
+        | grep -vE "$SAFE_SCRIPTS" > /dev/null; then
+                 echo  "Suspicious entries found in Crontab!" >> "$ALERTS"
+        fi
+#checks for running scripts
+        sudo ps -eo user,pid,cmd \
+        | grep -E "\.sh|bash|curl|wget|base64|python|perl" \
+        | grep -v grep \
+        | grep -vE "$SAFE_SCRIPTS" >> "$ALERTS"
+
+}
+
+#checking what needs to be monitores from LogHawk.txt
+info=$(tail -n 1 "$MONITOR")
+checks="${info#*here: }"
+echo "$checks"
+
+#if input is all 
+
+if [ "$checks" = "All" ] ; then
+        check_failed_logins
+#       check_system_errors
+#       check_scripts
+#       check_traffic
+fi
+
+
