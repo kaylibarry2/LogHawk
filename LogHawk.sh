@@ -16,8 +16,7 @@ TEMP_LOG=$(mktemp)
 MONITOR=LogHawk.txt
 ALERTS=LogHawkAlerts.txt
 
-#clearing the previous alerts file 
-> LogHawkAlerts.txt
+
 
 
 
