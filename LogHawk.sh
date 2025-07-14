@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 #constant file paths
 #put in file path that needs to be scanned for failed passwords
