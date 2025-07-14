@@ -1,6 +1,7 @@
 # LogHawk
 Project 3 - Introducing LogHawk: a script-based log analysis tool designed to quickly scan logs for security threats, system errors, and unusual activity.
-LogHawk can automatically scan for too many failed attempts, unusual traffic spikes, critical system errors, and suspicious script activity. By continuously scanning and flagging risky behavior, LogHawk helps teams respond faster, harden their systems, and stay ahead of attackers.
+LogHawk can automatically scan for too many failed attempts, unusual traffic spikes, critical system errors, and suspicious script activity. By continuously scanning and flagging risky behavior, LogHawk helps teams respond faster, harden their systems, and stay ahead of attackers. There is also an experimental LogHawk file called "eLogHawk.sh", which is for monitoring logs automatically through file paths on Linux without having to manually move the file paths to another file. This is not yet in a fully functional state and is not intended for use currently. 
+
 
 
 # Installation Steps 
