@@ -88,7 +88,7 @@ check_traffic() {
 
 #checking what needs to be monitored from LogHawk.txt
 checks=$(python3 << EOF
-with open("LogHawk.txt", "r") as f:
+with open("${MONITOR}", "r") as f:
         lines = f.readlines()
         last_line = lines[-1]
         checks_list = last_line.split(": ")
