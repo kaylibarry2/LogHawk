@@ -87,8 +87,15 @@ check_traffic() {
 
 
 #checking what needs to be monitored from LogHawk.txt
-info=$(tail -n 1 "$MONITOR")
-checks="${info#*here: }"
+checks=$(python3 << EOF
+with open("LogHawk.txt", "r") as f:
+        lines = f.readlines()
+        last_line = lines[-1]
+        checks_list = last_line.split(": ")
+        checks = checks_list[1].strip()
+        print(checks)
+EOF
+)
 
 
 #if input is all 
